@@ -165,12 +165,12 @@ namespace P4
                         move = true;
                         break;
                     case VirtualKey.Q:
-                    case VirtualKey.GamepadX:
+                    case VirtualKey.GamepadLeftTrigger:
                         Angulo--;
                         move = true;
                         break;
                     case VirtualKey.E:
-                    case VirtualKey.GamepadY:
+                    case VirtualKey.GamepadRightTrigger:
                         Angulo++;
                         move = true;
                         break;

@@ -46,3 +46,11 @@ PorfaAntonioNoCorrijasHoy/P4/obj/x64/Debug/resources.en-us.resfiles
 PorfaAntonioNoCorrijasHoy/P4/obj/x64/Debug/resources.en-us.resfiles.intermediate
 
 PorfaAntonioNoCorrijasHoy/P4/obj/x64/Debug/XamlSaveStateFile.xml
+
+*.cache
+
+*.json
+
+*.props
+
+*.targets
