@@ -144,7 +144,8 @@ namespace P4
 
                 float limit = 0.5f;
                 //Set Vibration to your wife
-                if ((reading.RightThumbstickX > limit) | (reading.RightThumbstickY > limit)){
+
+                if ((Math.Abs(reading.RightThumbstickX) > limit) | (Math.Abs(reading.RightThumbstickY) > limit)){
                     double X = reading.RightThumbstickX * reading.RightThumbstickX;
                     double Y = reading.RightThumbstickY * reading.RightThumbstickY;
 
@@ -153,7 +154,7 @@ namespace P4
                 }
                 else vibration.RightMotor = 0;
 
-                if ((reading.LeftTrigger > limit) | (reading.RightTrigger > limit))
+                if ((Math.Abs(reading.LeftTrigger) > limit) | (Math.Abs(reading.RightTrigger) > limit))
                 {
                     if (reading.LeftTrigger > reading.RightTrigger)
                         vibration.LeftMotor = reading.LeftTrigger;
