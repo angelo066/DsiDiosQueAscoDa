@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
+using Windows.Gaming.Input;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Xaml;
@@ -34,12 +35,51 @@ namespace P4
         CoreCursor pin;
         CoreCursor normal;
 
+        //Controlar mandos
+
+        private readonly object myLock = new object();
+        private List<Gamepad> myGamepads = new List<Gamepad>();
+        private Gamepad mainGamepad = null;
+        private GamepadReading reading, prereading;
+        private GamepadVibration vibration;
+
+        //Manejar el timer
+        DispatcherTimer gameTimer;
+
+
         public MainPage()
         {
             this.InitializeComponent();
 
             pin = new CoreCursor(CoreCursorType.Pin, 0);
             normal = new CoreCursor(CoreCursorType.Arrow, 0);
+
+
+            Gamepad.GamepadAdded += (object sender, Gamepad e) =>
+            {
+                lock (myLock)
+                {
+                    bool gamepadInList = myGamepads.Contains(e);
+                    //Mira se programar 
+                    if (!gamepadInList) myGamepads.Add(e);
+                }
+            };
+
+
+            Gamepad.GamepadRemoved += (object sender, Gamepad e) =>{
+                lock (myLock){
+                    //Buscamos el indice del GamePad que se ha removido
+                    int indexRemoved = myGamepads.IndexOf(e);
+                    // Si existe en la lista
+                    if(indexRemoved > -1){
+                        //Verificamos si es el actual /princiapl
+                        if (mainGamepad == myGamepads[indexRemoved])
+                            mainGamepad = null;
+                        //Se remueve de la lista sea el principal o no
+                        myGamepads.RemoveAt(indexRemoved);
+                    }
+                }
+            };
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
