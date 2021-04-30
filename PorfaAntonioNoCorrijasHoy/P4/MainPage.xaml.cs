@@ -91,7 +91,109 @@ namespace P4
                     ListaDrones.Add(VMitem);
                 }
             base.OnNavigatedTo(e);
+            GameTimerSetUp();
         }
+
+        /// <summary>
+        /// Esto establecer el mando para que empiece a funcinar :)
+        /// </summary>
+        public void GameTimerSetUp(){
+            gameTimer = new DispatcherTimer();
+            //Llamamos a un callback 
+            gameTimer.Tick += GameTimer_Tick;
+            gameTimer.Interval = new TimeSpan(1000); //1 segundo subnormal
+            gameTimer.Start();
+
+        }
+
+
+        void GameTimer_Tick(object sender, object e){
+            LeeMando();
+            //DetectaGestosMando();
+            DeadZoneMando();
+            AplMando();
+            FeedBack();
+        }
+
+        private void LeeMando(){
+            //No hay GamePads en la lista, no añade ninguno
+            if(myGamepads.Count != 0){
+                //Selecciona el principal como el primero de la lista
+                mainGamepad = myGamepads[0];
+                prereading = reading;
+                //Prerading es el reading anterior. Al principio es NULL
+                reading = mainGamepad.GetCurrentReading();
+            }
+        }
+
+        private void checkDeadZoneMando(ref double gamePadRead){
+            if (gamePadRead< 0.1) gamePadRead += 0.1;
+            else if (gamePadRead > 0.1) gamePadRead -= 0.1;
+            else gamePadRead = 0;
+        }
+
+        private void DeadZoneMando(){
+            checkDeadZoneMando(ref reading.RightThumbstickX);
+            checkDeadZoneMando(ref reading.RightThumbstickY);
+        }
+
+        private void FeedBack(){
+            if(mainGamepad != null){
+                //get the first gamepad
+                mainGamepad = myGamepads[0];
+
+                //Set Vibration to your wife
+                if ((reading.RightThumbstickX != 0) | (reading.RightThumbstickY != 0)){
+                    double X = reading.RightThumbstickX * reading.RightThumbstickX;
+                    double Y = reading.RightThumbstickY * reading.RightThumbstickY;
+
+                    if (X > Y) vibration.RightMotor = X;
+                    else vibration.RightMotor = Y;
+                }
+                else vibration.RightMotor = 0;
+
+                if ((reading.LeftTrigger != 0) | (reading.RightTrigger != 0)) {
+                    if (reading.LeftTrigger > reading.RightTrigger)
+                        vibration.LeftMotor = reading.LeftTrigger;
+                    else vibration.LeftMotor = reading.RightTrigger;
+                }
+                else vibration.LeftMotor = 0;
+
+                //copy vibration to mainGamePad
+                mainGamepad.Vibration = vibration;
+            }
+        }
+
+        private void AplMando(){
+            if((mainGamepad != null) && (Sel>=0) && (ImagenC.FocusState != FocusState.Unfocused)){
+
+                //Obtenemos los valores de la imagens
+                int X = (int)Canvas.GetLeft(ImagenC);
+                int Y = (int)Canvas.GetTop(ImagenC);
+                int Angulo = ListaDrones[Sel].Angulo;
+
+                //Movemos la imagen en funcion de la posicion del JoyStick
+                X = (int)(X + 10 * reading.RightThumbstickX);
+                Y = (int)(Y + 10 * reading.RightThumbstickX);
+                //Rotamos la imagen en funcion del indice del Trigger
+                Angulo = (int)(Angulo + 10 * reading.RightTrigger);
+                Angulo = (int)(Angulo + 10 * reading.LeftTrigger);
+
+                //Aplicamos Pos
+                Canvas.SetLeft(ImagenC, X);
+                Canvas.SetTop(ImagenC, Y);
+
+
+                //Aplicamos Rotation
+                ListaDrones[Sel].Angulo = Angulo;
+                CompositeTransform transformation = new CompositeTransform();
+                transformation.Rotation = Angulo;
+                transformation.CenterX = 25;
+                transformation.CenterY = 25;
+                ImagenC.RenderTransform = transformation;
+            }
+        }
+
 
 
         private void ImageGridView_ItemClick(object sender, ItemClickEventArgs e) {
