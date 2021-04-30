@@ -108,11 +108,11 @@ namespace P4
 
 
         void GameTimer_Tick(object sender, object e){
-            //LeeMando();
+            LeeMando();
             //DetectaGestosMando();
-            //DeadZoneMando();
-            //AplMando();
-            //FeedBack();
+            DeadZoneMando();
+            AplMando();
+            FeedBack();
         }
 
         private void LeeMando(){
@@ -142,8 +142,9 @@ namespace P4
                 //get the first gamepad
                 mainGamepad = myGamepads[0];
 
+                float limit = 0.5f;
                 //Set Vibration to your wife
-                if ((reading.RightThumbstickX != 0) | (reading.RightThumbstickY != 0)){
+                if ((reading.RightThumbstickX > limit) | (reading.RightThumbstickY > limit)){
                     double X = reading.RightThumbstickX * reading.RightThumbstickX;
                     double Y = reading.RightThumbstickY * reading.RightThumbstickY;
 
@@ -152,10 +153,11 @@ namespace P4
                 }
                 else vibration.RightMotor = 0;
 
-                if ((reading.LeftTrigger != 0) | (reading.RightTrigger != 0)) {
+                if ((reading.LeftTrigger > limit) | (reading.RightTrigger > limit))
+                {
                     if (reading.LeftTrigger > reading.RightTrigger)
                         vibration.LeftMotor = reading.LeftTrigger;
-                    else vibration.LeftMotor = reading.RightTrigger;
+                    else vibration.RightMotor = reading.RightTrigger;
                 }
                 else vibration.LeftMotor = 0;
 
@@ -174,10 +176,10 @@ namespace P4
 
                 //Movemos la imagen en funcion de la posicion del JoyStick
                 X = (int)(X + 10 * reading.RightThumbstickX);
-                Y = (int)(Y + 10 * reading.RightThumbstickX);
+                Y = (int)(Y - 10 * reading.RightThumbstickY);
                 //Rotamos la imagen en funcion del indice del Trigger
                 Angulo = (int)(Angulo + 10 * reading.RightTrigger);
-                Angulo = (int)(Angulo + 10 * reading.LeftTrigger);
+                Angulo = (int)(Angulo - 10 * reading.LeftTrigger);
 
                 //Aplicamos Pos
                 Canvas.SetLeft(ImagenC, X);
