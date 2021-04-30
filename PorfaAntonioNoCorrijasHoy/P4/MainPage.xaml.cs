@@ -183,7 +183,6 @@ namespace P4
                 Canvas.SetLeft(ImagenC, X);
                 Canvas.SetTop(ImagenC, Y);
 
-
                 //Aplicamos Rotation
                 ListaDrones[Sel].Angulo = Angulo;
                 CompositeTransform transformation = new CompositeTransform();
@@ -307,22 +306,28 @@ namespace P4
                         move = true;
                         break;
                     case VirtualKey.Q:
-                    case VirtualKey.GamepadLeftTrigger:
+                    case VirtualKey.GamepadX:
                         Angulo--;
                         move = true;
+                        break;
+                    case VirtualKey.GamepadLeftTrigger:
                         e.Handled = true;
+                        move = true;
                         break;
                     case VirtualKey.E:
-                    case VirtualKey.GamepadRightTrigger:
+                    case VirtualKey.GamepadY:
                         Angulo++;
                         move = true;
+                        break;
+                    case VirtualKey.GamepadRightTrigger:
                         e.Handled = true;
+                        move = true;
                         break;
                         //Abajo
                 }
 
 
-                if(move){
+                if(false){
                     Canvas.SetLeft(ImagenC, (int)X);
                     Canvas.SetTop(ImagenC, (int)Y);
 
