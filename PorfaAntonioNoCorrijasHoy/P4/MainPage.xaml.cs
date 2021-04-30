@@ -108,11 +108,11 @@ namespace P4
 
 
         void GameTimer_Tick(object sender, object e){
-            LeeMando();
+            //LeeMando();
             //DetectaGestosMando();
-            DeadZoneMando();
-            AplMando();
-            FeedBack();
+            //DeadZoneMando();
+            //AplMando();
+            //FeedBack();
         }
 
         private void LeeMando(){
@@ -127,7 +127,7 @@ namespace P4
         }
 
         private void checkDeadZoneMando(ref double gamePadRead){
-            if (gamePadRead< 0.1) gamePadRead += 0.1;
+            if (gamePadRead < 0.1) gamePadRead += 0.1;
             else if (gamePadRead > 0.1) gamePadRead -= 0.1;
             else gamePadRead = 0;
         }
